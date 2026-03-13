@@ -321,19 +321,18 @@ docker compose up --build -d
 
 ---
 
-## Segurança e Publicação
+## Implantação
 
-- Não publique o arquivo `.env`, bancos locais, dumps de depuração, certificados `.pfx/.pem` ou arquivos gerados em `media/`.
-- Este repositório já está configurado para ignorar artefatos locais em `.gitignore` e `.dockerignore`.
-- Para produção, mantenha `DEBUG=False` e habilite HTTPS com as variáveis `USE_HTTPS_IN_PRODUCTION`, `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE` e `SECURE_HSTS_SECONDS`.
-- Se houver proxy reverso na frente da aplicação, configure `SECURE_PROXY_SSL_HEADER` corretamente.
+- Use `.env.example` como base para a configuração do ambiente.
+- Em produção, mantenha `DEBUG=False` e habilite HTTPS com `USE_HTTPS_IN_PRODUCTION`, `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE` e `SECURE_HSTS_SECONDS`.
+- Se a aplicação estiver atrás de proxy reverso, configure `SECURE_PROXY_SSL_HEADER` de acordo com a infraestrutura.
 - O nome público do projeto é **DUIMP - Consultas**; o módulo Django interno permanece como `botduimp` por compatibilidade técnica.
 
 ---
 
 ## Licença
 
-Projeto desenvolvido para fins de portfólio e demonstração de habilidades em desenvolvimento web com Python/Django.
+Distribuído sob a licença MIT. Veja [LICENSE](LICENSE).
 
 ---
 

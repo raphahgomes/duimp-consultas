@@ -1,0 +1,72 @@
+{% extends "base.html" %}{% block title %}Configuração Inicial — DUIMP - Consultas{% endblock %}{% block content %}
+<div
+  class="max-w-xl mx-auto mt-6 bg-white rounded-xl shadow ring-1 ring-gray-200 p-8"
+>
+  <h1 class="text-2xl font-bold text-gray-800 mb-2">Configuração Inicial</h1>
+  <p class="text-sm text-gray-500 mb-6">
+    Primeiro acesso detectado. Crie o usuário administrador.
+  </p>
+
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+      <input
+        type="text"
+        name="nome"
+        required
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+      />
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+      <input
+        type="email"
+        name="email"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+      />
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1"
+        >Usuário</label
+      >
+      <input
+        type="text"
+        name="username"
+        required
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+      />
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1"
+          >Senha</label
+        >
+        <input
+          type="password"
+          name="password"
+          required
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1"
+          >Confirmar senha</label
+        >
+        <input
+          type="password"
+          name="password2"
+          required
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+        />
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition"
+    >
+      Concluir configuração
+    </button>
+  </form>
+</div>
+{% endblock %}

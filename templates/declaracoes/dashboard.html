@@ -1,0 +1,83 @@
+{% extends "base.html" %} {% block title %}Dashboard — DUIMP - Consultas{% endblock %}
+{% block content %}
+<div class="mb-6">
+  <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+  <p class="text-sm text-gray-500 mt-1">
+    Visão geral operacional do DUIMP - Consultas e dos eventos recentes.
+  </p>
+</div>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+  <div class="bg-white rounded-xl shadow ring-1 ring-gray-200 p-4">
+    <p class="text-xs text-gray-500">Consultas</p>
+    <p class="text-2xl font-bold text-gray-800">{{ total_consultas }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow ring-1 ring-gray-200 p-4">
+    <p class="text-xs text-gray-500">Concluídas</p>
+    <p class="text-2xl font-bold text-green-700">{{ total_concluidas }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow ring-1 ring-gray-200 p-4">
+    <p class="text-xs text-gray-500">Processando</p>
+    <p class="text-2xl font-bold text-yellow-700">{{ total_processando }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow ring-1 ring-gray-200 p-4">
+    <p class="text-xs text-gray-500">Erros</p>
+    <p class="text-2xl font-bold text-red-700">{{ total_erros }}</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="bg-white rounded-xl shadow ring-1 ring-gray-200 overflow-hidden">
+    <div
+      class="px-4 py-3 border-b bg-gray-50 flex justify-between items-center"
+    >
+      <h2 class="text-sm font-semibold text-gray-700">Consultas recentes</h2>
+      <a
+        href="{% url 'declaracoes:historico' %}"
+        class="text-xs text-blue-600 hover:underline"
+        >Ver histórico</a
+      >
+    </div>
+    <div class="divide-y divide-gray-100">
+      {% for c in consultas_recentes %}
+      <div class="px-4 py-3 text-sm flex justify-between">
+        <span class="font-mono text-gray-700">{{ c.tipo }} {{ c.numero }}</span>
+        <span class="text-gray-500">{{ c.get_status_display }}</span>
+      </div>
+      {% empty %}
+      <div class="px-4 py-6 text-sm text-gray-400">
+        Nenhuma consulta registrada.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow ring-1 ring-gray-200 overflow-hidden">
+    <div
+      class="px-4 py-3 border-b bg-gray-50 flex justify-between items-center"
+    >
+      <h2 class="text-sm font-semibold text-gray-700">Logs recentes</h2>
+      <a
+        href="{% url 'declaracoes:logs' %}"
+        class="text-xs text-blue-600 hover:underline"
+        >Ver logs</a
+      >
+    </div>
+    <div class="divide-y divide-gray-100">
+      {% for log in logs_recentes %}
+      <div class="px-4 py-3 text-sm">
+        <div class="flex justify-between">
+          <span class="font-semibold text-gray-700">{{ log.acao }}</span
+          ><span class="text-xs text-gray-400"
+            >{{ log.criado_em|date:"d/m H:i" }}</span
+          >
+        </div>
+        <p class="text-gray-500 mt-1">{{ log.mensagem|truncatechars:120 }}</p>
+      </div>
+      {% empty %}
+      <div class="px-4 py-6 text-sm text-gray-400">Nenhum log registrado.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

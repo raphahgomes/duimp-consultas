@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Banco local
+db.sqlite3
+db.sqlite3-journal
+
+# Arquivos gerados
+staticfiles/
+media/
+*.xlsx
+debug_dumps/
+workspace.code-workspace
+
+# Docker
+docker-compose*.yml
+.dockerignore
+Dockerfile
+
+# Certificados
+*.pfx
+*.p12
+*.pem
+*.crt
+*.key
+
+# Docs
+README.md
+LICENSE
+
+# Env (usa via docker-compose env_file)
+.env
+.env.example
+
+# Prettier
+.prettierignore
+node_modules/

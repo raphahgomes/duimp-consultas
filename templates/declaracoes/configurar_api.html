@@ -1,0 +1,173 @@
+{% extends "base.html" %}{% block title %}Configurar Chaves de Acesso — DUIMP - Consultas{% endblock %}{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Chaves de Acesso</h1>
+    <p class="text-sm text-gray-500 mt-1">
+      Configure as credenciais para autenticação no Portal Único Siscomex. As
+      chaves são armazenadas criptografadas.
+    </p>
+  </div>
+
+  <!-- Informativo -->
+  <div
+    class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-700"
+  >
+    <p class="font-semibold mb-1">Como obter as chaves de acesso?</p>
+    <ol class="list-decimal list-inside space-y-1 text-blue-600">
+      <li>
+        Acesse o
+        <a
+          href="https://portalunico.siscomex.gov.br"
+          target="_blank"
+          class="underline font-medium"
+          >Portal Único Siscomex</a
+        >
+        com seu certificado digital.
+      </li>
+      <li>
+        Vá em <strong>Perfil → Chaves de Acesso → Gerar nova chave</strong>.
+      </li>
+      <li>
+        Copie o <strong>ID da chave</strong> e a
+        <strong>Chave secreta</strong> e cole abaixo.
+      </li>
+    </ol>
+  </div>
+
+  {% if config %}
+  <div
+    class="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 text-sm text-green-700 flex items-center gap-3"
+  >
+    <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+      <path
+        fill-rule="evenodd"
+        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+        clip-rule="evenodd"
+      />
+    </svg>
+    <span
+      >Chaves configuradas para <strong>{{ config.cpf_cnpj }}</strong>.
+      Atualizadas em {{ config.atualizado_em|date:"d/m/Y H:i" }}.</span
+    >
+  </div>
+  {% endif %}
+
+  <div class="bg-white rounded-xl shadow ring-1 ring-gray-200 p-6">
+    <form method="post" x-data="{ mostrarSecreta: false }" autocomplete="off">
+      {% csrf_token %}
+
+      <div class="space-y-5">
+        <div>
+          <label
+            for="cpf_cnpj"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >CPF / CNPJ do importador</label
+          >
+          <input
+            type="text"
+            id="cpf_cnpj"
+            name="cpf_cnpj"
+            required
+            value="{{ config.cpf_cnpj|default:'' }}"
+            placeholder="00.000.000/0000-00"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label
+            for="id_chave"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >ID da Chave de Acesso</label
+          >
+          <input
+            type="text"
+            id="id_chave"
+            name="id_chave"
+            required
+            placeholder="Cole o ID da chave gerado no portal"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {% if config %}
+          <p class="text-xs text-gray-400 mt-1">
+            Deixe em branco para não alterar a chave atual.
+          </p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label
+            for="chave_secreta"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Chave Secreta</label
+          >
+          <div class="relative">
+            <input
+              :type="mostrarSecreta ? 'text' : 'password'"
+              id="chave_secreta"
+              name="chave_secreta"
+              required
+              placeholder="Cole a chave secreta gerada no portal"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <button
+              type="button"
+              @click="mostrarSecreta = !mostrarSecreta"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <svg
+                x-show="!mostrarSecreta"
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+              <svg
+                x-show="mostrarSecreta"
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-between">
+        <a
+          href="{% url 'declaracoes:index' %}"
+          class="text-sm text-gray-500 hover:text-gray-700"
+          >Cancelar</a
+        >
+        <button
+          type="submit"
+          class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2 rounded-lg shadow transition"
+        >
+          Salvar chaves
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

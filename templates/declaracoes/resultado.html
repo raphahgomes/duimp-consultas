@@ -1,0 +1,117 @@
+{% extends "base.html" %}{% block title %}{{ consulta.tipo }} {{ consulta.numero }} — DUIMP - Consultas{% endblock %}{% block extra_head %}{% if consulta.status == 'PENDENTE' or consulta.status == 'PROCESSANDO' %}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const statusUrl = "{% url 'declaracoes:status' consulta.pk %}";
+    const interval = setInterval(async () => {
+      const resp = await fetch(statusUrl);
+      const data = await resp.json();
+      if (data.status) {
+        document.getElementById("status-text").textContent =
+          data.status_display;
+        document.getElementById("total-itens").textContent = data.total_itens;
+      }
+      if (data.status === "CONCLUIDO" || data.status === "ERRO") {
+        clearInterval(interval);
+        setTimeout(() => location.reload(), 600);
+      }
+    }, 2500);
+  });
+</script>
+{% endif %}{% endblock %}{% block content %}
+<div
+  class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
+>
+  <div>
+    <a
+      href="{% url 'declaracoes:historico' %}"
+      class="text-blue-600 hover:text-blue-800 text-sm"
+      >← Histórico</a
+    >
+    <h1 class="text-2xl font-bold text-gray-800 font-mono mt-1">
+      {{ consulta.tipo }} {{ consulta.numero }}
+    </h1>
+    <p class="text-xs text-gray-400 mt-1">
+      Criado em {{ consulta.criado_em|date:"d/m/Y H:i" }}
+    </p>
+  </div>
+  <div class="flex items-center gap-3">
+    <span
+      class="inline-flex items-center px-3 py-1.5 rounded-full bg-gray-100 text-gray-700 text-sm font-semibold"
+      id="status-text"
+      >{{ consulta.get_status_display }}</span
+    >
+    {% if consulta.excel_file %}
+    <a
+      href="{% url 'declaracoes:download_excel' consulta.pk %}"
+      class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+      >Baixar Excel</a
+    >
+    {% endif %}
+  </div>
+</div>
+
+{% if consulta.mensagem_erro %}
+<div
+  class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-6 text-sm"
+>
+  <strong>Erro:</strong> {{ consulta.mensagem_erro }}
+</div>
+{% endif %}
+
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+  <div
+    class="bg-white rounded-xl ring-1 ring-gray-200 shadow-sm p-4 text-center"
+  >
+    <p class="text-2xl font-bold text-gray-800" id="total-itens">
+      {{ itens.count }}
+    </p>
+    <p class="text-xs text-gray-500 mt-0.5">Itens</p>
+  </div>
+</div>
+
+{% if itens %}
+<div class="bg-white rounded-xl shadow ring-1 ring-gray-200 overflow-x-auto">
+  <table class="min-w-full text-xs">
+    <thead class="bg-gray-800 text-white">
+      <tr>
+        <th class="px-3 py-2.5 text-left">Nº Ad.</th>
+        <th class="px-3 py-2.5 text-left">Seq.</th>
+        <th class="px-3 py-2.5 text-left">Quantidade</th>
+        <th class="px-3 py-2.5 text-left">Un. Medida</th>
+        <th class="px-3 py-2.5 text-left min-w-[240px]">Descrição</th>
+        <th class="px-3 py-2.5 text-left">cClassTrib</th>
+        <th class="px-3 py-2.5 text-right">Vlr. Unitário</th>
+        <th class="px-3 py-2.5 text-right">II</th>
+        <th class="px-3 py-2.5 text-right">IPI</th>
+        <th class="px-3 py-2.5 text-right">PIS/PASEP</th>
+        <th class="px-3 py-2.5 text-right">COFINS</th>
+        <th class="px-3 py-2.5 text-left">NCM</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {% for item in itens %}
+      <tr class="{% cycle '' 'bg-gray-50' %}">
+        <td class="px-3 py-2 font-mono">{{ item.num_adicao }}</td>
+        <td class="px-3 py-2 font-mono">{{ item.sequencial }}</td>
+        <td class="px-3 py-2 font-mono text-right">{{ item.quantidade }}</td>
+        <td class="px-3 py-2">{{ item.unidade_medida }}</td>
+        <td class="px-3 py-2">{{ item.descricao }}</td>
+        <td class="px-3 py-2 font-mono">{{ item.c_class_trib }}</td>
+        <td class="px-3 py-2 font-mono text-right">
+          {{ item.valor_unitario }}
+        </td>
+        <td class="px-3 py-2 font-mono text-right">{{ item.ii }}</td>
+        <td class="px-3 py-2 font-mono text-right">{{ item.ipi }}</td>
+        <td class="px-3 py-2 font-mono text-right">{{ item.pis_pasep }}</td>
+        <td class="px-3 py-2 font-mono text-right">{{ item.cofins }}</td>
+        <td class="px-3 py-2 font-mono">{{ item.ncm }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="bg-white rounded-xl ring-1 ring-gray-200 shadow p-12 text-center">
+  <p class="text-gray-500 font-medium">Processando declaração…</p>
+</div>
+{% endif %} {% endblock %}
